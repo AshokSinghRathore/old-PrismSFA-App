@@ -3,8 +3,11 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import CustomDrawer from '../components/UIComponents/CustomDrawer';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import {colors} from '../constants/colors';
 import AllClients from '../screens/Main/Clients/AllClients';
+import Attendance from '../screens/Main/Members/Attendance';
+
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 const Main = () => {
@@ -19,6 +22,23 @@ const Main = () => {
           },
 
           title: 'Clients',
+          headerStyle: {borderBottomWidth: 1, borderBottomColor: colors.prime2},
+          headerTitleStyle: {
+            color: 'black',
+            alignSelf: 'center',
+          },
+        
+        }}
+      />
+      <Drawer.Screen
+        name="Attendance"
+        component={Attendance}
+        options={{
+          drawerIcon: ({color}) => {
+            return <AntDesign size={25} color={color} name="book" />;
+          },
+
+          title: 'Attendance',
           headerStyle: {borderBottomWidth: 1, borderBottomColor: colors.prime2},
           headerTitleStyle: {
             color: 'black',

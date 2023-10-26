@@ -18,26 +18,29 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setCredentials} from '../../redux/reducers';
 import Loading from '../../components/UIComponents/Loading';
 import {setCredentialAsync} from '../../functions/asnyc';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import jwtDecode from 'jwt-decode';
-import { getMemberDetail } from '../../api/member/member-api';
+import {getMemberDetail} from '../../api/member/member-api';
 const SignIn = () => {
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
+  const [secure, setIsSecure] = useState(true);
   const Dispatch = useDispatch();
   const [loading, setloading] = useState(false);
   async function SignIn() {
     setloading(true);
     try {
       const resp = await login(userId, password);
-      const decode = await jwtDecode(resp.token)
-      const UserDetails = await getMemberDetail(decode.sub,resp.token);
+      const decode = await jwtDecode(resp.token);
+      const UserDetails = await getMemberDetail(decode.sub, resp.token);
       await setCredentialAsync(resp.token);
-      Dispatch(setCredentials({
-        token:resp.token,
-        ...UserDetails,
-        ...decode
-      }))
-
+      Dispatch(
+        setCredentials({
+          token: resp.token,
+          ...UserDetails,
+          ...decode,
+        }),
+      );
     } catch (er) {
       if (er.code === 'ERR_NETWORK') {
         Alert.alert(
@@ -52,7 +55,9 @@ const SignIn = () => {
       } else {
         Alert.alert(
           'Something Went Wrong',
-          "Sorry we can't process request at this moment. Please try after some time with Stable internet connection and correct credentials ("+er.message+")",
+          "Sorry we can't process request at this moment. Please try after some time with Stable internet connection and correct credentials (" +
+            er.message +
+            ')',
         );
       }
     }
@@ -73,7 +78,7 @@ const SignIn = () => {
             <Image
               source={require('../../assets/images/icon.png')}
               resizeMode="contain"
-              style={{width: 200, height: 200,marginBottom:-10}}
+              style={{width: 200, height: 200, marginBottom: -10}}
             />
             <Text
               style={[
@@ -98,13 +103,24 @@ const SignIn = () => {
               </View>
               <View style={SignInStyles.subViewStyles}>
                 <Text style={SignInStyles.subHeaderText}>Password</Text>
-                <TextInput
-                  value={password}
-                  onChangeText={e => setPassword(e)}
-                  style={SignInStyles.textInput}
-                  placeholder="Password"
-                />
+                <View style={SignInStyles.passwordInput}>
+                  <TextInput
+                    value={password}
+                    onChangeText={e => setPassword(e)}
+                    style={[SignInStyles.textInput,{width:"85%"}]}
+                    secureTextEntry={secure}
+                    placeholder="Password"
+                  />
+                  <Icon
+                    name={secure ? 'eye-slash' : 'eye'}
+                    size={18}
+                    color="black"
+                    onPress={() => setIsSecure(!secure)} 
+                    style={SignInStyles.iconStyle} 
+                  />
+                </View>
               </View>
+
               <TouchableOpacity
                 onPress={SignIn}
                 style={SignInStyles.signInButtonContainer}>

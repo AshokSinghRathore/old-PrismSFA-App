@@ -4,7 +4,7 @@ const { StyleSheet } = require("react-native");
 
 export const SignInStyles = StyleSheet.create({
     center:{
-
+      
         alignItems:"center"
     },
     card:{
@@ -51,5 +51,34 @@ export const SignInStyles = StyleSheet.create({
         borderRadius:10,
         padding:10
     }
+,subViewStyles: {
+    margin: 10,
+    marginTop: 15,
+  },
+  subHeaderText: {
+    color: 'white',
+    fontSize: 12,
+  },
+  textInput: {
+    fontSize: 16,
+    backgroundColor: 'white',
+    color: 'black',
+    height: 40,
+    borderRadius: 10,
+    paddingVertical: 1,
+    paddingLeft: 10,
 
+
+
+  },
+  passwordInput: {
+    flexDirection: 'row', 
+    alignItems: 'center',
+
+    borderRadius: 10,
+    backgroundColor:"white"
+  },
+  iconStyle: {
+    padding: 10, 
+  }
 })

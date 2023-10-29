@@ -19,7 +19,13 @@ const App = () => {
       const creds = await getCredentialAsync()
       if (creds.token){
         const decode = await jwtDecode(creds.token);
-        const UserDetails = await getMemberDetail(decode.sub,creds.token);
+        try {
+          
+          const UserDetails = await getMemberDetail(decode.sub,creds.token);
+        } catch (error) {
+          console.log(error)
+          await removeCredentialAsync()
+        }
         Dispatch(setCredentials({
           token:creds.token,
           ...UserDetails,

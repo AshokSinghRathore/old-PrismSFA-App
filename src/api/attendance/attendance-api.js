@@ -42,5 +42,6 @@ export async function getAttendance(id, token, from, to) {
    url: url,
  });
   const respData = (resp.data._embedded.attendance[0])
+
   return respData
 }

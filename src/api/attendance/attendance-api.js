@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {API_URL} from '../../constants/api-url';
-export async function markAttendanceCheckIn(token, data) {
+export async function markAttendance(token, data) {
+  console.log(data)
   const url = API_URL.backend_url + `attendance`;
   var header = {
     'Content-type': 'application/json',

@@ -32,6 +32,7 @@ import Toast from 'react-native-simple-toast';
 import {emailValidator} from '../../../helper/emailValidator';
 import {mobileNumberValidator} from '../../../helper/mobileValidator';
 import ModalLoading from '../../../components/UIComponents/ModalLoading';
+import { getCredentialAsync } from '../../../functions/asnyc';
 const AllClients = ({navigation}) => {
   const Cred = useSelector(state => state.Cred);
   const [loading, setloading] = useState(false);
@@ -65,6 +66,7 @@ const AllClients = ({navigation}) => {
     setloading(true);
     try {
       const resp = await getAllClients(Cred.token, 0);
+
       navigation.setOptions({
         headerRight: ({}) => {
           return (

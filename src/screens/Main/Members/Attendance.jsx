@@ -15,19 +15,18 @@ import {useSelector} from 'react-redux';
 import {getLocation} from '../../../functions/fetch-location';
 import {
   getAttendance,
-  markAttendanceCheckIn,
-  markAttendanceCheckOut,
+  markAttendance,
 } from '../../../api/attendance/attendance-api';
 import Toast from 'react-native-simple-toast';
 import ModalLoading from '../../../components/UIComponents/ModalLoading';
-import { getDateISOFormat } from '../../../helper/date-function';
+import {getDateISOFormat} from '../../../helper/date-function';
 const Attendance = ({navigation}) => {
   const [loading, setloading] = useState(false);
   const [coords, setCoords] = useState({});
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isCheckedIn, setIsCheckedIn] = useState(false);
   const [isCheckedOut, setIsCheckedOut] = useState(false);
-  const [attendanceId,setAttendanceId] = useState(null)
+  const [attendanceData, setAttendanceData] = useState(null);
   const Cred = useSelector(state => state.Cred);
   useEffect(() => {
     const timerID = setInterval(() => {
@@ -48,20 +47,19 @@ const Attendance = ({navigation}) => {
       const resp = await getAttendance(
         Cred.sub,
         Cred.token,
-        getDateISOFormat(currentTime,false),
-        getDateISOFormat(currentTime,true),
+        getDateISOFormat(currentTime, false),
+        getDateISOFormat(currentTime, true),
       );
-      if (resp){
-        setAttendanceId(resp.id);
-        setIsCheckedIn(resp.checkIn?true:false)
-        setIsCheckedOut(resp.checkOut?true:false)
-      }
-      else {
-        setIsCheckedIn(false)
-        setIsCheckedOut(false)
+      if (resp) {
+        setAttendanceData(resp);
+        setIsCheckedIn(resp.checkIn ? true : false);
+        setIsCheckedOut(resp.checkOut ? true : false);
+      } else {
+        setIsCheckedIn(false);
+        setIsCheckedOut(false);
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
       Alert.alert(
         'Something went wrong',
         "Can't Fetch Data ( " + error.message + ')',
@@ -69,11 +67,11 @@ const Attendance = ({navigation}) => {
     }
     setloading(false);
   }
-useFocusEffect(
-  useCallback(()=>{
-    get()
-  },[])
-)
+  useFocusEffect(
+    useCallback(() => {
+      get();
+    }, []),
+  );
   function getCurrentTime(now) {
     const hours = now.getHours();
     const minutes = now.getMinutes();
@@ -93,23 +91,22 @@ useFocusEffect(
     setloading(true);
     try {
       const data = {
-
         memberId: Cred.sub,
-        checkIn: currentTime,
         checkInLocation: {
-          langitude: coords.latitude,
-          latitude: coords.longitude,
+          latitude: coords.latitude,
+          longitude: coords.longitude,
         },
+        doCheckIn: true,
+        doCheckOut: false,
       };
-      const resp = await markAttendanceCheckIn(Cred.token, data);
-      setAttendanceId(resp.id)
+      const resp = await markAttendance(Cred.token, data);
+      setAttendanceData(resp);
       setIsCheckedIn(true);
     } catch (error) {
       Alert.alert(
         'Something went wrong',
         "Can't Mark Attendance ( " + error.message + ')',
       );
-      
     }
     setloading(false);
   }
@@ -120,14 +117,19 @@ useFocusEffect(
         memberId: Cred.sub,
         checkOut: currentTime,
         checkOutLocation: {
-          langitude: coords.latitude,
-          latitude: coords.longitude,
+          latitude: coords.latitude,
+          longitude: coords.longitude,
         },
+        ...attendanceData,
+        doCheckIn: false,
+        doCheckOut: true,
       };
-      const resp = await markAttendanceCheckOut(Cred.token, data,attendanceId);
+      console.log(data)
+
+      const resp = await markAttendance(Cred.token, data);
       setIsCheckedOut(true);
     } catch (error) {
-      setloading(false)
+      setloading(false);
       Alert.alert(
         'Something went wrong',
         "Can't Mark Attendance ( " + error.message + ')',
@@ -151,12 +153,9 @@ useFocusEffect(
                 Toast.LONG,
               )
             }
-            style={[
-              attendanceStyle.buttonStyle,
-              {backgroundColor:"grey"},
-            ]}>
-            <Text style={attendanceStyle.buttonTextStyle}>
-             Attendance Already Marked For Today
+            style={[attendanceStyle.buttonStyle, {backgroundColor: 'grey'}]}>
+            <Text style={[attendanceStyle.buttonTextStyle,{fontSize:17,padding:10}]}>
+              Attendance Already Marked For Today
             </Text>
           </TouchableOpacity>
         ) : (

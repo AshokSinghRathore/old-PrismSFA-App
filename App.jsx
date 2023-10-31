@@ -17,22 +17,23 @@ const App = () => {
     setloading(true)
     try {
       const creds = await getCredentialAsync()
-      if (creds.token){
+      if (creds){
         const decode = await jwtDecode(creds.token);
         try {
-          
           const UserDetails = await getMemberDetail(decode.sub,creds.token);
+          Dispatch(setCredentials({
+            token:creds.token,
+            ...UserDetails,
+            ...decode
+          }))
         } catch (error) {
           console.log(error)
           await removeCredentialAsync()
         }
-        Dispatch(setCredentials({
-          token:creds.token,
-          ...UserDetails,
-          ...decode
-        }))
+        
       }
     } catch (error) {
+      console.log(error)
       await removeCredentialAsync()
     }
     setloading(false)

@@ -6,6 +6,7 @@ const attendanceStyle = StyleSheet.create({
     borderRadius: 10,
     flexDirection: 'row',
     alignItems: 'center',
+    padding:10
   },
   buttonTextStyle: {
     color: 'white',

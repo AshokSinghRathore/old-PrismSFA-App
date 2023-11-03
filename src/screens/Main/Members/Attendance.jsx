@@ -124,7 +124,7 @@ const Attendance = ({navigation}) => {
         doCheckIn: false,
         doCheckOut: true,
       };
-      console.log(data)
+
 
       const resp = await markAttendance(Cred.token, data);
       setIsCheckedOut(true);
@@ -153,9 +153,9 @@ const Attendance = ({navigation}) => {
                 Toast.LONG,
               )
             }
-            style={[attendanceStyle.buttonStyle, {backgroundColor: 'grey'}]}>
-            <Text style={[attendanceStyle.buttonTextStyle,{fontSize:17,padding:10}]}>
-              Attendance Already Marked For Today
+            style={{backgroundColor:"grey",borderRadius:10,paddingVertical:10,alignSelf:"center",marginTop:10,width:"90%"}}>
+            <Text style={{fontSize:15,width:"90%",padding:8,color:"white",fontFamily:"Poppins-SemiBold",textAlign:"center"}}>
+  Already Marked For Today
             </Text>
           </TouchableOpacity>
         ) : (
